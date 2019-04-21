@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import Objects.Challenge;
+import Objects.Server;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -98,6 +99,7 @@ public class CreateChallengeController {
     @FXML
     void submitButtonClicked(ActionEvent event) {
         Challenge challenge = new Challenge(time.getText(), relatedWord.getText(), files);
+        Server.addChallenge(challenge);
         JOptionPane.showMessageDialog(null, " Challenge submitted successfully\nPress back or create new Challenge");
         relatedWord.clear();
         time.clear();

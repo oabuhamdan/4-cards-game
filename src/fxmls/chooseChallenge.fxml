@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="324.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChooseChallengeController">
+   <children>
+      <MenuBar layoutX="-6.0" prefHeight="29.0" prefWidth="192.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Options">
+            <items>
+                  <MenuItem mnemonicParsing="false" onAction="#chatRoomClicked" text="Chat Room" />
+                  <MenuItem mnemonicParsing="false" onAction="#leaderBoardClicked" text="Leaderboard" />
+                  <MenuItem mnemonicParsing="false" onAction="#signOutClicked" text="Sign Out" />
+                  <MenuItem mnemonicParsing="false" onAction="#closeClicked" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#howToPlayClicked" text="How To Play" />
+                  <MenuItem mnemonicParsing="false" onAction="#aboutClicked" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <Button layoutX="290.0" layoutY="279.0" mnemonicParsing="false" onAction="#playButtonClicked" prefHeight="29.0" prefWidth="160.0" text="Play">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <Label layoutX="24.0" layoutY="43.0" prefHeight="37.0" prefWidth="205.0" text="Choose a challenge">
+         <font>
+            <Font name="Cortoba" size="21.0" />
+         </font>
+      </Label>
+      <Button layoutX="116.0" layoutY="279.0" mnemonicParsing="false" onAction="#backButtonClicked" prefHeight="29.0" prefWidth="160.0" text="Back">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <ListView fx:id="challengesList" layoutX="27.0" layoutY="114.0" prefHeight="145.0" prefWidth="422.0" />
+      <Separator layoutX="204.0" layoutY="114.0" orientation="VERTICAL" prefHeight="145.0" prefWidth="59.0" />
+      <Label layoutX="27.0" layoutY="86.0" prefHeight="27.0" prefWidth="71.0" text="Challenge">
+         <font>
+            <Font name="Cortoba" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="233.0" layoutY="88.0" prefHeight="27.0" prefWidth="71.0" text="Time">
+         <font>
+            <Font name="Cortoba" size="15.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

@@ -15,4 +15,16 @@ public class Challenge {
         this.relatedWord = relatedWord;
         this.images = images;
     }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getRelatedWord() {
+        return relatedWord;
+    }
+
+    public List<File> getImages() {
+        return images;
+    }
 }
