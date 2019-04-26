@@ -1,11 +1,15 @@
 package controllers;
 
+import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import Objects.Challenge;
+import Objects.Server;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +19,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
+
+import javax.imageio.ImageIO;
 
 public class ChallengeViewerController {
 
@@ -86,10 +93,32 @@ public class ChallengeViewerController {
     }
 
     @FXML
-    void initialize() throws FileNotFoundException {
+    void initialize() throws IOException {
         assert image1 != null : "fx:id=\"image1\" was not injected: check your FXML file 'chooseChallenge.fxml'.";
         assert image2 != null : "fx:id=\"image2\" was not injected: check your FXML file 'chooseChallenge.fxml'.";
         assert image3 != null : "fx:id=\"image3\" was not injected: check your FXML file 'chooseChallenge.fxml'.";
         assert image4 != null : "fx:id=\"image4\" was not injected: check your FXML file 'chooseChallenge.fxml'.";
     }
+
+    void setSelectedChallenge(int selectedChallenge) throws IOException {
+
+        Challenge challenge = Server.getChallenges().get(selectedChallenge);
+
+        BufferedImage[] bufferedImages=new BufferedImage[4];
+        Image[] images=new Image[4];
+
+        for(int i = 0 ; i <4 ; i++){
+            bufferedImages[i] = ImageIO.read(challenge.getImages().get(i));
+            images[i]=SwingFXUtils.toFXImage(bufferedImages[i],null);
+        }
+        image1.setImage(images[0]);
+
+        image2.setImage(images[1]);
+
+        image3.setImage(images[2]);
+
+        image4.setImage(images[3]);
+
+    }
+
 }

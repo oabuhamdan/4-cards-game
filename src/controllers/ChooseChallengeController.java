@@ -72,7 +72,15 @@ public class ChooseChallengeController {
         int index = Integer.parseInt(value.substring(11, 13).replace(" ",""));
         Challenge challenge=Server.getChallenges().get(index);
 
-        Parent loader = FXMLLoader.load(getClass().getResource("/fxmls/challengeViewer.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
+        ChallengeViewerController temp ;
+
+        //Parent loader = FXMLLoader.load(getClass().getResource("/fxmls/challengeViewer.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxmls/challengeViewer.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
+        Parent loader = fxmlLoader.load();
+        temp = fxmlLoader.getController();
+        temp.setSelectedChallenge(index);
+
         Scene scene = new Scene(loader); //This creates a new scene called scene and assigns it as the Sample.FXML document which was named "loader"
         Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //this accesses the window.
         app_stage.setScene(scene); //This sets the scene as scene
@@ -92,7 +100,7 @@ public class ChooseChallengeController {
         List<String> challengesDesc = new ArrayList<>();
         List<Challenge> challenges = Server.getChallenges();
         for ( int i = 0; i < challenges.size(); i++ ) {
-            challengesDesc.add("Challenge #" + i + " \t\t\t\t " + challenges.get(i).getTime() + " Minutes");
+            challengesDesc.add("Challenge #" + i + " \t\t\t\t\t\t " + challenges.get(i).getTime() + " Minutes");
         }
         if (challenges.size() > 0) {
             ObservableList<String> observableList = FXCollections.observableArrayList(challengesDesc);

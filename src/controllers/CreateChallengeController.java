@@ -1,10 +1,10 @@
 package controllers;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -25,6 +25,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class CreateChallengeController {
 
@@ -63,12 +64,24 @@ public class CreateChallengeController {
 
     @FXML
     void browseButtonClicked(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose 4 photos");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
-        files = fileChooser.showOpenMultipleDialog(new Stage());
-        viewFilesNames(files);
+        /*JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Choose 4 photos");
+        chooser.setFileFilter(new FileNameExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+        files = Arrays.asList(chooser.getSelectedFiles());
+        viewFilesNames(files);*/
+        while(files.size()!=4) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose 4 photos");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+            files = fileChooser.showOpenMultipleDialog(new Stage());
+            if(files.size()==4)
+            viewFilesNames(files);
+            else{
+                JOptionPane.showMessageDialog(null,"make sure to select 4 photos");
+                files = new ArrayList<>();
+            }
+        }
     }
 
     @FXML
@@ -96,14 +109,25 @@ public class CreateChallengeController {
 
     }
 
+
+
+
     @FXML
-    void submitButtonClicked(ActionEvent event) {
+    void submitButtonClicked(ActionEvent event) throws IOException {
+        if(relatedWord.getText().length()==0){
+            JOptionPane.showMessageDialog(null,"please insert a related word");
+        }else if(time.getText().length()==0){JOptionPane.showMessageDialog(null,"please insert a time");}else{
         Challenge challenge = new Challenge(time.getText(), relatedWord.getText(), files);
         Server.addChallenge(challenge);
+        OutputStream outputStream = new FileOutputStream("challenges.txt");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+        objectOutputStream.writeObject(Server.getChallenges());
         JOptionPane.showMessageDialog(null, " Challenge submitted successfully\nPress back or create new Challenge");
         relatedWord.clear();
         time.clear();
         filesList.setItems(null);
+
+    }
     }
 
     @FXML

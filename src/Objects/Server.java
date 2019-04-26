@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Server {
 
+
     private static List<Challenge> challenges=new ArrayList<>();
     private static List<User> users = new ArrayList<>();
 
@@ -18,10 +19,16 @@ public class Server {
 
     public static void addChallenge(Challenge challenge){
         challenges.add(challenge);
+        //TODO Serialize challenges object to be sent to actual server
+    }
+
+    public static void setChallenges(List<Challenge> challenges) {
+        Server.challenges = challenges;
     }
 
     public static void addUser(User user){
         users.add(user);
+        //TODO Serialize users object to be sent to actual server
     }
 
 
