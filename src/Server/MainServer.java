@@ -1,6 +1,7 @@
+package Server;
+
 import Objects.Challenge;
 
-import javax.sound.sampled.Port;
 import java.io.*;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -29,9 +30,9 @@ public class MainServer {
     }
 
     private static void loadChallenges() throws IOException, ClassNotFoundException {
-        //fill challenges List from file ..
-        FileInputStream fileInputStream = new FileInputStream("challenges.txt");
+        //fill Server.challenges List from file ..
+        FileInputStream fileInputStream = new FileInputStream("Server.challenges.txt");
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        challenges = (List<Challenge>) objectInputStream.readObject();//get challenges saved on server
+        challenges = (List<Challenge>) objectInputStream.readObject();//get Server.challenges saved on server
     }
 }

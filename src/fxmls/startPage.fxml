@@ -6,10 +6,9 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="321.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StartPageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="321.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StartPageController">
     <children>
         <MenuBar layoutX="-6.0" prefHeight="29.0" prefWidth="192.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
@@ -27,7 +26,7 @@
         </MenuBar>
         <Label alignment="CENTER" contentDisplay="CENTER" layoutY="90.0" prefHeight="49.0" prefWidth="600.0" text="Welcome to 4 photos Challenge" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
             <font>
-                <Font name="Electron" size="31.0" />
+                <Font size="24.0" />
             </font>
         </Label>
         <Button layoutX="67.0" layoutY="245.0" mnemonicParsing="false" onAction="#signInClicked" prefHeight="44.0" prefWidth="160.0" text="Sign In">
@@ -40,7 +39,5 @@
                 <Font name="System Bold" size="13.0" />
             </font>
         </Button>
-        <Line endX="327.0" layoutX="125.0" layoutY="144.0" startX="-100.0" />
-        <Line endX="327.0" layoutX="124.0" layoutY="103.0" startX="-100.0" />
     </children>
 </AnchorPane>

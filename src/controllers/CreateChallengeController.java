@@ -116,18 +116,23 @@ public class CreateChallengeController {
     void submitButtonClicked(ActionEvent event) throws IOException {
         if(relatedWord.getText().length()==0){
             JOptionPane.showMessageDialog(null,"please insert a related word");
-        }else if(time.getText().length()==0){JOptionPane.showMessageDialog(null,"please insert a time");}else{
-        Challenge challenge = new Challenge(time.getText(), relatedWord.getText(), files);
-        Server.addChallenge(challenge);
-        OutputStream outputStream = new FileOutputStream("challenges.txt");
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-        objectOutputStream.writeObject(Server.getChallenges());
-        JOptionPane.showMessageDialog(null, " Challenge submitted successfully\nPress back or create new Challenge");
-        relatedWord.clear();
-        time.clear();
-        filesList.setItems(null);
+        }else if(time.getText().length()==0){
+            JOptionPane.showMessageDialog(null,"please insert a time");
+        }else{
+            Challenge challenge = new Challenge(time.getText(), relatedWord.getText(), files);
+            //TODO sendToServer(); send the 4 photos,relatedWord and time to the server and the server will manually create a challenge with the received data..
 
-    }
+            Server.addChallenge(challenge);// adds the challenge to the list of Server.challenges locally in the client's device
+            //serialization should be replaced here...
+            OutputStream outputStream = new FileOutputStream("Server.challenges.txt");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(Server.getChallenges());
+            JOptionPane.showMessageDialog(null, " Challenge submitted successfully\nPress back or create new Challenge");
+            relatedWord.clear();
+            time.clear();
+            filesList.setItems(null);
+
+        }
     }
 
     @FXML

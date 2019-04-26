@@ -19,7 +19,7 @@ public class Server {
 
     public static void addChallenge(Challenge challenge){
         challenges.add(challenge);
-        //TODO Serialize challenges object to be sent to actual server
+        //TODO Serialize Server.challenges object to be sent to actual server
     }
 
     public static void setChallenges(List<Challenge> challenges) {
