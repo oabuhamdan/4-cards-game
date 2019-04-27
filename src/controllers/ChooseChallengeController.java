@@ -1,14 +1,13 @@
 package controllers;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import Objects.Challenge;
-import Objects.Server;
+import Objects.LocalDataHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -31,6 +30,8 @@ public class ChooseChallengeController {
 
     @FXML
     private ListView<String> challengesList;
+
+    List<Challenge> challenges;
 
     @FXML
     void aboutClicked(ActionEvent event) {
@@ -69,13 +70,9 @@ public class ChooseChallengeController {
     @FXML
     void playButtonClicked(ActionEvent event) throws IOException {
         String value = challengesList.getSelectionModel().getSelectedItem();
-        int index = Integer.parseInt(value.substring(11, 13).replace(" ",""));
-        Challenge challenge=Server.getChallenges().get(index);
+        int index = Integer.parseInt(value.substring(11, 13).replace(" ", ""));
 
-        ChallengeViewerController temp ;
-
-        //Parent loader = FXMLLoader.load(getClass().getResource("/fxmls/challengeViewer.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
-
+        ChallengeViewerController temp;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxmls/challengeViewer.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
         Parent loader = fxmlLoader.load();
         temp = fxmlLoader.getController();
@@ -95,10 +92,11 @@ public class ChooseChallengeController {
 
     @FXML
     void initialize() {
-        assert challengesList != null : "fx:id=\"challengesList\" was not injected: check your FXML file 'createChallenge.fxml'.";
 
+        //challenges=LocalDataHandler.getChallenges();
+        assert challengesList != null : "fx:id=\"challengesList\" was not injected: check your FXML file 'createChallenge.fxml'.";
         List<String> challengesDesc = new ArrayList<>();
-        List<Challenge> challenges = Server.getChallenges();
+        challenges = LocalDataHandler.getChallenges();
         for ( int i = 0; i < challenges.size(); i++ ) {
             challengesDesc.add("Challenge #" + i + " \t\t\t\t\t\t " + challenges.get(i).getTime() + " Minutes");
         }
@@ -108,4 +106,5 @@ public class ChooseChallengeController {
             challengesList.setItems(filteredList);
         }
     }
+
 }

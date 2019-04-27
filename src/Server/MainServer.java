@@ -13,26 +13,21 @@ public class MainServer {
 
     public static void main(String[] args) {
         try {
-            loadChallenges();
+           // loadChallenges();
             ServerSocket s = new ServerSocket(PORT);
             while (true) {
                 MyThread t = new MyThread(s.accept(), challenges);
                 t.start();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private static void loadChallenges() throws IOException, ClassNotFoundException {
-        //fill Server.challenges List from file ..
-        FileInputStream fileInputStream = new FileInputStream("Server.challenges.txt");
+        //fill LocalDataHandler.challenges List from file ..
+        FileInputStream fileInputStream = new FileInputStream("LocalDataHandler.challenges.txt");
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        challenges = (List<Challenge>) objectInputStream.readObject();//get Server.challenges saved on server
+        challenges = (List<Challenge>) objectInputStream.readObject();//get LocalDataHandler.challenges saved on server
     }
 }

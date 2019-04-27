@@ -1,15 +1,15 @@
 package controllers;
 
 import java.io.*;
+import java.net.Socket;
 import java.net.URL;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import Objects.Challenge;
-import Objects.Server;
+import Objects.ClientSocket;
+import Objects.LocalDataHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -25,7 +25,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class CreateChallengeController {
 
@@ -69,16 +68,16 @@ public class CreateChallengeController {
         chooser.setFileFilter(new FileNameExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
         files = Arrays.asList(chooser.getSelectedFiles());
         viewFilesNames(files);*/
-        while(files.size()!=4) {
+        while (files.size() != 4) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Choose 4 photos");
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+                    new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg","*.JPG","*.JPEG","*.PNG"));
             files = fileChooser.showOpenMultipleDialog(new Stage());
-            if(files.size()==4)
-            viewFilesNames(files);
-            else{
-                JOptionPane.showMessageDialog(null,"make sure to select 4 photos");
+            if (files.size() == 4)
+                viewFilesNames(files);
+            else {
+                JOptionPane.showMessageDialog(null, "make sure to select 4 photos");
                 files = new ArrayList<>();
             }
         }
@@ -110,23 +109,22 @@ public class CreateChallengeController {
     }
 
 
-
-
     @FXML
     void submitButtonClicked(ActionEvent event) throws IOException {
-        if(relatedWord.getText().length()==0){
-            JOptionPane.showMessageDialog(null,"please insert a related word");
-        }else if(time.getText().length()==0){
-            JOptionPane.showMessageDialog(null,"please insert a time");
-        }else{
+        if (relatedWord.getText().length() == 0) {
+            JOptionPane.showMessageDialog(null, "please insert a related word");
+        } else if (time.getText().length() == 0) {
+            JOptionPane.showMessageDialog(null, "please insert a time");
+        } else {
             Challenge challenge = new Challenge(time.getText(), relatedWord.getText(), files);
             //TODO sendToServer(); send the 4 photos,relatedWord and time to the server and the server will manually create a challenge with the received data..
 
-            Server.addChallenge(challenge);// adds the challenge to the list of Server.challenges locally in the client's device
+            LocalDataHandler.addChallenge(challenge);// adds the challenge to the list of LocalDataHandler.challenges locally in the client's device
             //serialization should be replaced here...
-            OutputStream outputStream = new FileOutputStream("Server.challenges.txt");
+            OutputStream outputStream = new FileOutputStream("LocalDataHandler.challenges.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(Server.getChallenges());
+            objectOutputStream.writeObject(LocalDataHandler.getChallenges());
+            uploadFilesToServer();
             JOptionPane.showMessageDialog(null, " Challenge submitted successfully\nPress back or create new Challenge");
             relatedWord.clear();
             time.clear();
@@ -134,6 +132,7 @@ public class CreateChallengeController {
 
         }
     }
+
 
     @FXML
     void initialize() {
@@ -151,4 +150,38 @@ public class CreateChallengeController {
         FilteredList<String> filteredList = new FilteredList<>(observableList, s -> true);
         filesList.setItems(filteredList);
     }
+
+    private void uploadFilesToServer() {
+        try {
+            Socket socket = ClientSocket.getInstance();
+            BufferedOutputStream bos = new BufferedOutputStream(socket.getOutputStream());
+            DataOutputStream dos = new DataOutputStream(bos);
+            dos.writeUTF("uploadImages");
+            for ( File file : files ) {
+                long length = file.length();
+                dos.writeLong(length);
+                FileInputStream fis = new FileInputStream(file);
+                BufferedInputStream bis = new BufferedInputStream(fis);
+                int theByte;
+                while ((theByte = bis.read()) != -1) bos.write(theByte);
+                bis.close();
+            }
+        } catch (Exception e) {
+        }
+    }
+        /*try {
+            Socket client=new Socket("127.0.0.1",8000);
+            DataOutputStream dataOutputStream = new DataOutputStream( client.getOutputStream());
+            dataOutputStream.writeUTF("uploadImages");//sending request to server
+            //DataOutputStream out = new DataOutputStream(client.getOutputStream());
+            for ( File imageFile : files ) {
+                ImageOutputStream ios=ImageIO.createImageOutputStream(client.getOutputStream());
+                BufferedImage image=ImageIO.read(imageFile);
+                ImageIO.write(image,"PNG",ios);
+                //Thread.sleep(100);
+            }
+        }
+        catch (Exception e){}
+
+    }*/
 }

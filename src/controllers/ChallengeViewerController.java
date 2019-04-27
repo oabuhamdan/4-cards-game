@@ -1,14 +1,14 @@
 package controllers;
 
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import Objects.Challenge;
-import Objects.Server;
+import Objects.ClientSocket;
+import Objects.LocalDataHandler;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,7 +19,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -100,13 +99,24 @@ public class ChallengeViewerController {
         assert image4 != null : "fx:id=\"image4\" was not injected: check your FXML file 'chooseChallenge.fxml'.";
     }
 
+    private void getImagesFolder(int selectedFolder) {
+          try {
+            Socket socket = ClientSocket.getInstance();
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            dos.writeUTF("getImagesFolder");
+            dos.writeInt(selectedFolder);
+            receiveImages(selectedFolder);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     void setSelectedChallenge(int selectedChallenge) throws IOException {
-
-        Challenge challenge = Server.getChallenges().get(selectedChallenge);
-
+        getImagesFolder(selectedChallenge);
+        Challenge challenge = LocalDataHandler.getChallenges().get(selectedChallenge);
+        challenge.setFolderIndex(selectedChallenge);
         BufferedImage[] bufferedImages=new BufferedImage[4];
         Image[] images=new Image[4];
-
         for(int i = 0 ; i <4 ; i++){
             bufferedImages[i] = ImageIO.read(challenge.getImages().get(i));
             images[i]=SwingFXUtils.toFXImage(bufferedImages[i],null);
@@ -119,6 +129,25 @@ public class ChallengeViewerController {
 
         image4.setImage(images[3]);
 
+    }
+
+    private void receiveImages(int selectedFolder) {
+        Socket s = ClientSocket.getInstance();
+        new File("ClientSideChallenges/" + selectedFolder).mkdir();
+        try {
+            BufferedInputStream bis = new BufferedInputStream(s.getInputStream());
+            DataInputStream dis = new DataInputStream(bis);
+            for ( int i = 0; i < 4; i++ ) {
+                long fileLength = dis.readLong();
+                FileOutputStream fos = new FileOutputStream(new File("ClientSideChallenges/"+selectedFolder+"/image"+i+".png"));
+                BufferedOutputStream bos = new BufferedOutputStream(fos);
+                for(int j = 0; j < fileLength; j++) bos.write(bis.read());
+                bos.close();
+            }
+            //dis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
