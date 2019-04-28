@@ -1,26 +1,21 @@
 package Server;
 
 import Objects.Challenge;
-import javafx.stage.DirectoryChooser;
+import Objects.User;
 
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MyThread extends Thread {
     Socket s;
     InetAddress client;
-    private List<Challenge> challenges;
 
-    public MyThread(Socket s, List<Challenge> challenges) {
+
+    public MyThread(Socket s) {
         this.s = s;
-        this.challenges = challenges;
     }
 
     @Override
@@ -28,29 +23,92 @@ public class MyThread extends Thread {
         client = s.getInetAddress();
         InputStream inputStream;
         DataInputStream dataInputStream;
-        while (true) {
-            try {
-                String operation;
-                inputStream = s.getInputStream();
-                dataInputStream = new DataInputStream(inputStream);
-                operation = dataInputStream.readUTF();
-                switch (operation) {
-                    case "getChallenges":
-                        //sendChallenges();
-                        //TODO getChallenges(); send LocalDataHandler.challenges each challenge should include the 4 photos explicitly (not an object)
-                        break;
-                    case "uploadImages":
-                        receiveImages();
-                        System.out.println("receiving Images");
-                        break;
-                    case "getImagesFolder":
-                        sendFilesToClient();
-                        System.out.println("sending files to client");
-                        break;
-                }
 
-            } catch (IOException e) {
+        try {
+            String operation;
+            inputStream = s.getInputStream();
+            dataInputStream = new DataInputStream(inputStream);
+            operation = dataInputStream.readUTF();
+            switch (operation) {
+                case "getChallenges":
+                    //sendChallenges();
+                    //TODO getChallenges(); send LocalDataHandler.challenges each challenge should include the 4 photos explicitly (not an object)
+                    break;
+                case "uploadImages":
+                    receiveImages();
+                    System.out.println("uploadImages");
+                    break;
+                case "getImagesFolder":
+                    sendFilesToClient();
+                    System.out.println("getImagesFolder");
+                    break;
+                case "createUser":
+                    createUser();
+                    System.out.println("createUser");
+                    break;
+                case "checkCardinality":
+                    checkCardinality();
+                    System.out.println("checkCardinality");
+                    break;
+                case "addScoreToUser":
+                    addScoreToUser();
+                    break;
+                case "getLeaderBoard":
+                    getLeaderBoard();
+                    break;
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getLeaderBoard() {
+        for ( User user : MainServer.users ) {
+
+        }
+    }
+
+    private void addScoreToUser() {
+        try {
+            DataInputStream dis = new DataInputStream(s.getInputStream());
+            String userName = dis.readUTF();
+            int score = dis.readInt();
+            for ( User user : MainServer.users ) {
+                if (userName.equalsIgnoreCase(user.getUserName()))
+                    user.increaseScore(score);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void checkCardinality() {
+        try {
+            DataInputStream dis = new DataInputStream(s.getInputStream());
+            DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+            String userName = dis.readUTF();
+            String password = dis.readUTF();
+            for ( User user : MainServer.users ) {
+                if (userName.equalsIgnoreCase(user.getUserName()) && password.equals(user.getPassword()))
+                    dos.writeUTF("true");
+            }
+            dos.writeUTF("false");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createUser() {
+        try {
+            DataInputStream dis = new DataInputStream(s.getInputStream());
+            String userName = dis.readUTF();
+            String password = dis.readUTF();
+            String email = dis.readUTF();
+            MainServer.users.add(new User(userName, password, 0, email));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -96,6 +154,7 @@ public class MyThread extends Thread {
                 for ( int j = 0; j < fileLength; j++ ) bos.write(bis.read());
                 bos.close();
             }
+            dis.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -108,11 +167,10 @@ public class MyThread extends Thread {
             DataInputStream dataInputStream = new DataInputStream(inputStream);
             selectedFolder = dataInputStream.readInt();
 
-            File dir = new File("ClientSideChallenges" + File.separator + selectedFolder);
+            File dir = new File("ServerSideChallenges" + File.separator + selectedFolder);
 
             List<File> images = Arrays.asList(dir.listFiles());
 
-            //BufferedOutputStream bos = new BufferedOutputStream(s.getOutputStream());
             DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
             for ( File file : images ) {
@@ -124,7 +182,9 @@ public class MyThread extends Thread {
                 while ((theByte = bis.read()) != -1) dos.write(theByte);
                 bis.close();
             }
+            dos.close();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import Objects.ClientSocket;
+import Objects.LocalDataHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,7 +28,7 @@ public class SignInController {
     private URL location;
 
     @FXML
-    private PasswordField passowrdField;
+    private PasswordField passwordField;
 
     @FXML
     private TextField userNameField;
@@ -51,16 +52,20 @@ public class SignInController {
 
     @FXML
     void signInButtonClicked(ActionEvent event) throws IOException {
+        Parent loader;
         if (checkCardinality()) {
-            Parent loader = FXMLLoader.load(getClass().getResource("/fxmls/homePage.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
-            Scene scene = new Scene(loader); //This creates a new scene called scene and assigns it as the Sample.FXML document which was named "loader"
-            Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //this accesses the window.
-            app_stage.setScene(scene); //This sets the scene as scene
-            app_stage.show(); // this shows the scene
+            loader = FXMLLoader.load(getClass().getResource("/fxmls/homePage.fxml"));
+            LocalDataHandler.setSignedInUser(userNameField.getText());
         } else {
             JOptionPane.showMessageDialog(null, "User name or Password is wrong\nPlease try again");
+            loader = FXMLLoader.load(getClass().getResource("/fxmls/signIn.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
         }
+        Scene scene = new Scene(loader); //This creates a new scene called scene and assigns it as the Sample.FXML document which was named "loader"
+        Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //this accesses the window.
+        app_stage.setScene(scene); //This sets the scene as scene
+        app_stage.show(); // this
     }
+
 
     @FXML
     void backButtonClicked(ActionEvent event) throws IOException {
@@ -74,26 +79,24 @@ public class SignInController {
     @FXML
     void initialize() {
         ClientSocket.createNewConnection();
-        assert passowrdField != null : "fx:id=\"passowrdField\" was not injected: check your FXML file 'SignIn.fxml'.";
+        assert passwordField != null : "fx:id=\"passwordField\" was not injected: check your FXML file 'SignIn.fxml'.";
         assert userNameField != null : "fx:id=\"userNameField\" was not injected: check your FXML file 'SignIn.fxml'.";
 
     }
 
     private boolean checkCardinality() {
-        String response = "true";
-        /*try {
+        String response = "false";
+       /*try {
             Socket socket = ClientSocket.getInstance();
-            BufferedOutputStream bos = new BufferedOutputStream(socket.getOutputStream());
-            DataOutputStream dos = new DataOutputStream(bos);
-            BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
-            DataInputStream dis = new DataInputStream(bis);
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            DataInputStream dis = new DataInputStream(socket.getInputStream());
             dos.writeUTF("checkCardinality");
             dos.writeUTF(userNameField.getText());
-            dos.writeUTF(passowrdField.getText());
+            dos.writeUTF(passwordField.getText());
             response = dis.readUTF();
         } catch (Exception e) {
             e.printStackTrace();
         }*/
-        return response.equals("true");
+        return !response.equals("true");
     }
 }

@@ -46,13 +46,19 @@
          </font>
       </Button>
       <ListView fx:id="challengesList" layoutX="27.0" layoutY="114.0" prefHeight="145.0" prefWidth="422.0" />
-      <Separator layoutX="204.0" layoutY="114.0" orientation="VERTICAL" prefHeight="145.0" prefWidth="59.0" />
+      <Separator layoutX="261.0" layoutY="113.0" orientation="VERTICAL" prefHeight="145.0" prefWidth="59.0" />
       <Label layoutX="27.0" layoutY="86.0" prefHeight="27.0" prefWidth="71.0" text="Challenge">
          <font>
             <Font name="Cortoba" size="15.0" />
          </font>
       </Label>
-      <Label layoutX="233.0" layoutY="88.0" prefHeight="27.0" prefWidth="71.0" text="Time">
+      <Label layoutX="184.0" layoutY="88.0" prefHeight="27.0" prefWidth="71.0" text="Time">
+         <font>
+            <Font name="Cortoba" size="15.0" />
+         </font>
+      </Label>
+      <Separator layoutX="151.0" layoutY="113.0" orientation="VERTICAL" prefHeight="145.0" prefWidth="59.0" />
+      <Label layoutX="290.0" layoutY="87.0" prefHeight="27.0" prefWidth="71.0" text="Creator">
          <font>
             <Font name="Cortoba" size="15.0" />
          </font>

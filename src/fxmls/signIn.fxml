@@ -31,7 +31,7 @@
                 <Font name="System Bold" size="13.0" />
             </font>
         </Button>
-        <PasswordField fx:id="passowrdField" layoutX="123.0" layoutY="192.0" />
+        <PasswordField fx:id="passwordField" layoutX="123.0" layoutY="192.0" />
         <TextField fx:id="userNameField" layoutX="123.0" layoutY="135.0" />
         <Label layoutX="31.0" layoutY="135.0" text="User name">
             <font>

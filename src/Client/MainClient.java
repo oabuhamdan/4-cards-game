@@ -7,14 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainClient extends Application {
-    static final int PORT = 8000;
-    private static List<Challenge> challenges=new ArrayList<>();
-    Socket s ;
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/fxmls/startPage.fxml"));

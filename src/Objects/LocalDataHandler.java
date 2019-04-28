@@ -7,17 +7,14 @@ import java.util.List;
 
 public class LocalDataHandler {
 
+    private static String signedInUser;
 
     private static List<Challenge> challenges = new ArrayList<>();
-    private static List<User> users = new ArrayList<>();
 
     public static List<Challenge> getChallenges() {
         return challenges;
     }
 
-    public static List<User> getUsers() {
-        return users;
-    }
 
     public static void addChallenge(Challenge challenge) {
         challenges.add(challenge);
@@ -28,10 +25,6 @@ public class LocalDataHandler {
         LocalDataHandler.challenges = challenges;
     }
 
-    public static void addUser(User user) {
-        users.add(user);
-        //TODO Serialize users object to be sent to actual server
-    }
 
     private void getChallengesFromServer() {
         try {
@@ -44,6 +37,11 @@ public class LocalDataHandler {
             e.printStackTrace();
         }
     }
+    public static void setSignedInUser(String signedInUser) {
+        LocalDataHandler.signedInUser = signedInUser;
+    }
 
-
+    public static String getSignedInUser() {
+        return signedInUser;
+    }
 }

@@ -40,11 +40,9 @@ public class SignUpController {
 
     @FXML
     void addNewUserButtonClicked(ActionEvent event) {
-        ClientSocket.createNewConnection();
         try {
             Socket socket = ClientSocket.getInstance();
-            BufferedOutputStream bos = new BufferedOutputStream(socket.getOutputStream());
-            DataOutputStream dos = new DataOutputStream(bos);
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
             dos.writeUTF("createUser");
             dos.writeUTF(userNameField.getText());
             dos.writeUTF(passwordField.getText());
@@ -71,6 +69,7 @@ public class SignUpController {
 
     @FXML
     void initialize() {
+        ClientSocket.createNewConnection();
         assert passwordField != null : "fx:id=\"passwordField\" was not injected: check your FXML file 'SignUp.fxml'.";
         assert emailField != null : "fx:id=\"emailField\" was not injected: check your FXML file 'SignUp.fxml'.";
         assert userNameField != null : "fx:id=\"userNameField\" was not injected: check your FXML file 'SignUp.fxml'.";

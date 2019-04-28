@@ -35,7 +35,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <Button layoutX="584.0" layoutY="415.0" mnemonicParsing="false" onAction="#playButtonClicked" prefHeight="29.0" prefWidth="160.0" text="Submit">
+      <Button layoutX="584.0" layoutY="415.0" mnemonicParsing="false" onAction="#submitButtonClicked" prefHeight="29.0" prefWidth="160.0" text="Submit">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
@@ -49,7 +49,7 @@
       <ImageView fx:id="image2" fitHeight="134.0" fitWidth="160.0" layoutX="225.0" layoutY="123.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="image3" fitHeight="134.0" fitWidth="160.0" layoutX="407.0" layoutY="125.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="image4" fitHeight="134.0" fitWidth="160.0" layoutX="577.0" layoutY="125.0" pickOnBounds="true" preserveRatio="true" />
-      <Label  layoutX="489.0" layoutY="56.0" text="Remaining Time : ">
+      <Label  layoutX="489.0" layoutY="56.0" text="Challenge Time : ">
          <font>
             <Font name="Cortoba" size="20.0" />
          </font>
@@ -64,6 +64,6 @@
             <Font name="Cortoba" size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="192.0" layoutY="328.0" prefHeight="26.0" prefWidth="520.0" />
+      <TextField fx:id="relatedWord" layoutX="192.0" layoutY="328.0" prefHeight="26.0" prefWidth="520.0" />
    </children>
 </AnchorPane>

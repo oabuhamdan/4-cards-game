@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import Objects.Challenge;
+import Objects.ClientSocket;
 import Objects.LocalDataHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -77,28 +78,31 @@ public class ChooseChallengeController {
         Parent loader = fxmlLoader.load();
         temp = fxmlLoader.getController();
         temp.setSelectedChallenge(index);
-
         Scene scene = new Scene(loader); //This creates a new scene called scene and assigns it as the Sample.FXML document which was named "loader"
         Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //this accesses the window.
         app_stage.setScene(scene); //This sets the scene as scene
         app_stage.show(); // this shows the scene
-
     }
 
     @FXML
-    void signOutClicked(ActionEvent event) {
-
+    void signOutClicked(ActionEvent event) throws IOException {
+        ClientSocket.terminateConnection();
+        Parent loader = FXMLLoader.load(getClass().getResource("/fxmls/startPage.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
+        Scene scene = new Scene(loader); //This creates a new scene called scene and assigns it as the Sample.FXML document which was named "loader"
+        Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //this accesses the window.
+        app_stage.setScene(scene); //This sets the scene as scene
+        app_stage.show(); // this shows the scene
     }
 
     @FXML
     void initialize() {
-
-        //challenges=LocalDataHandler.getChallenges();
+        ClientSocket.createNewConnection();
         assert challengesList != null : "fx:id=\"challengesList\" was not injected: check your FXML file 'createChallenge.fxml'.";
         List<String> challengesDesc = new ArrayList<>();
         challenges = LocalDataHandler.getChallenges();
         for ( int i = 0; i < challenges.size(); i++ ) {
-            challengesDesc.add("Challenge #" + i + " \t\t\t\t\t\t " + challenges.get(i).getTime() + " Minutes");
+            challengesDesc.add("Challenge #" + i + " \t\t\t "
+                    + challenges.get(i).getTime() + " Minutes"+"\t\t"+challenges.get(i).getCreator());
         }
         if (challenges.size() > 0) {
             ObservableList<String> observableList = FXCollections.observableArrayList(challengesDesc);
