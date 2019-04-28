@@ -1,8 +1,6 @@
 package controllers;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+import Objects.ClientSocket;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +11,12 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import javax.swing.*;
+import java.io.*;
+import java.net.Socket;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class SignUpController {
 
     @FXML
@@ -22,7 +26,7 @@ public class SignUpController {
     private URL location;
 
     @FXML
-    private PasswordField passowrdField;
+    private PasswordField passwordField;
 
     @FXML
     private TextField emailField;
@@ -36,9 +40,19 @@ public class SignUpController {
 
     @FXML
     void addNewUserButtonClicked(ActionEvent event) {
-        System.out.println(userNameField.getText());
-        System.out.println(passowrdField.getText());
-        System.out.println(emailField.getText());
+        ClientSocket.createNewConnection();
+        try {
+            Socket socket = ClientSocket.getInstance();
+            BufferedOutputStream bos = new BufferedOutputStream(socket.getOutputStream());
+            DataOutputStream dos = new DataOutputStream(bos);
+            dos.writeUTF("createUser");
+            dos.writeUTF(userNameField.getText());
+            dos.writeUTF(passwordField.getText());
+            dos.writeUTF(emailField.getText());
+            JOptionPane.showMessageDialog(null, "User created successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -49,6 +63,7 @@ public class SignUpController {
         app_stage.setScene(scene); //This sets the scene as scene
         app_stage.show(); // this shows the scene
     }
+
     @FXML
     void closeClicked(ActionEvent event) {
         System.exit(0);
@@ -56,7 +71,7 @@ public class SignUpController {
 
     @FXML
     void initialize() {
-        assert passowrdField != null : "fx:id=\"passowrdField\" was not injected: check your FXML file 'SignUp.fxml'.";
+        assert passwordField != null : "fx:id=\"passwordField\" was not injected: check your FXML file 'SignUp.fxml'.";
         assert emailField != null : "fx:id=\"emailField\" was not injected: check your FXML file 'SignUp.fxml'.";
         assert userNameField != null : "fx:id=\"userNameField\" was not injected: check your FXML file 'SignUp.fxml'.";
 
