@@ -1,11 +1,11 @@
 package Server;
 
+import Objects.Challenge;
 import Objects.User;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -31,8 +31,8 @@ public class MyThread extends Thread {
             operation = dataInputStream.readUTF();
             switch (operation) {
                 case "getChallenges":
-                    //sendChallenges();
-                    //TODO getChallenges(); send LocalDataHandler.challenges each challenge should include the 4 photos explicitly (not an object)
+                    sendChallenges();
+                    System.out.println("sendChallenges");
                     break;
                 case "uploadImages":
                     receiveImages();
@@ -46,15 +46,21 @@ public class MyThread extends Thread {
                     createUser();
                     System.out.println("createUser");
                     break;
+                case "createChallenge":
+                    createChallenge();
+                    System.out.println("createChallenge");
+                    break;
                 case "checkCardinality":
                     checkCardinality();
                     System.out.println("checkCardinality");
                     break;
                 case "addScoreToUser":
                     addScoreToUser();
+                    System.out.println("addScoreToUser");
                     break;
                 case "getLeaderBoard":
                     getLeaderBoard();
+                    System.out.println("getLeaderBoard");
                     break;
             }
 
@@ -66,14 +72,14 @@ public class MyThread extends Thread {
     private void getLeaderBoard() {
         try {
             List<User> users = MainServer.users;
+            users.add(new User("osama", "", 20, ""));
+            users.add(new User("osama", "", 50, ""));
             users.sort(Comparator.comparingInt(User::getScore));
-            //users.forEach(System.out::println);
             ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
-            oos.writeObject(oos);
+            oos.writeObject(users);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private void addScoreToUser() {
@@ -81,7 +87,7 @@ public class MyThread extends Thread {
             DataInputStream dis = new DataInputStream(s.getInputStream());
             String userName = dis.readUTF();
             int score = dis.readInt();
-            for (User user : MainServer.users) {
+            for ( User user : MainServer.users ) {
                 if (userName.equalsIgnoreCase(user.getUserName()))
                     user.increaseScore(score);
             }
@@ -97,7 +103,7 @@ public class MyThread extends Thread {
             DataOutputStream dos = new DataOutputStream(s.getOutputStream());
             String userName = dis.readUTF();
             String password = dis.readUTF();
-            for (User user : MainServer.users) {
+            for ( User user : MainServer.users ) {
                 if (userName.equalsIgnoreCase(user.getUserName()) && password.equals(user.getPassword()))
                     dos.writeUTF("true");
             }
@@ -113,34 +119,55 @@ public class MyThread extends Thread {
             String userName = dis.readUTF();
             String password = dis.readUTF();
             String email = dis.readUTF();
-            MainServer.users.add(new User(userName, password, 0, email));
+            User user = new User(userName, password, 0, email);
+            MainServer.users.add(user);
+            serialize(MainServer.users, "Users.txt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createChallenge() {
+        try {
+            DataInputStream dis = new DataInputStream(s.getInputStream());
+            String word = dis.readUTF();
+            String time = dis.readUTF();
+            String creator = dis.readUTF();
+            Challenge challenge = new Challenge(time, word, creator);
+            MainServer.challenges.add(challenge);
+            serialize(MainServer.challenges, "Challenges.txt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void serialize(Object object, String file) {
+        OutputStream outputStream;
+        try {
+            outputStream = new FileOutputStream(file);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(object);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void sendChallenges() throws IOException {
-        int numOfChallenges = getNumOfChallenges();
-        FileInputStream fis;
-        OutputStream outputStream = s.getOutputStream();
-        File f;
-        byte[] buffer;
-        for (int i = 1; i <= numOfChallenges; i++) {//i is the folder with a challenge
-            for (int j = 1; j < 5; i++) {         //j is the photo name which will be numbers from 1 to 4
-                f = new File("challenges\\" + Integer.toString(i) + "\\" + Integer.toString(j));
-                fis = new FileInputStream(f);
-                buffer = new byte[fis.available()];
-                fis.read(buffer);
-                outputStream.write(buffer);
-            }
+        try {
+            List<Challenge> challenges = MainServer.challenges;
+            ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
+            oos.writeObject(challenges);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
     private int getNumOfChallenges() {
         File dir = new File("ServerSideChallenges");
         int numberOfSubfolder = 0;
-        File listDir[] = dir.listFiles();
-        for (File file : listDir) {
+        File[] listDir = dir.listFiles();
+        for ( File file : listDir ) {
             if (file.isDirectory()) {
                 numberOfSubfolder++;
             }
@@ -154,11 +181,11 @@ public class MyThread extends Thread {
         try {
             BufferedInputStream bis = new BufferedInputStream(s.getInputStream());
             DataInputStream dis = new DataInputStream(bis);
-            for (int i = 0; i < 4; i++) {
+            for ( int i = 0; i < 4; i++ ) {
                 long fileLength = dis.readLong();
                 FileOutputStream fos = new FileOutputStream(new File("ServerSideChallenges/" + challengeNumber + "/image" + i + ".png"));
                 BufferedOutputStream bos = new BufferedOutputStream(fos);
-                for (int j = 0; j < fileLength; j++) bos.write(bis.read());
+                for ( int j = 0; j < fileLength; j++ ) bos.write(bis.read());
                 bos.close();
             }
             dis.close();
@@ -176,11 +203,11 @@ public class MyThread extends Thread {
 
             File dir = new File("ServerSideChallenges" + File.separator + selectedFolder);
 
-            List<File> images = Arrays.asList(dir.listFiles());
+            File[] images = dir.listFiles();
 
             DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
-            for (File file : images) {
+            for ( File file : images ) {
                 long length = file.length();
                 dos.writeLong(length);
                 FileInputStream fis = new FileInputStream(file);

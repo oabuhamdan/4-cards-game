@@ -3,24 +3,18 @@ package Objects;
 
 import java.io.File;
 import java.io.Serializable;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
 public class Challenge implements Serializable {
     private String time;
     private String relatedWord;
-    transient private List<File> images;
     private int folderIndex;
     private String creator;
 
-    public Challenge() {
-    }
-
-    public Challenge(String time, String relatedWord, List<File> images, String creator) {
+    public Challenge(String time, String relatedWord, String creator) {
         this.time = time;
         this.relatedWord = relatedWord;
-        this.images = images;
         this.creator=creator;
     }
 

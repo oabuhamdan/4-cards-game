@@ -43,7 +43,7 @@ public class HomePageController {
 
     @FXML
     void closeClicked(ActionEvent event) {
-
+        System.exit(0);
     }
 
     @FXML
@@ -61,8 +61,13 @@ public class HomePageController {
     }
 
     @FXML
-    void leaderBoardClicked(ActionEvent event) {
-
+    void leaderBoardClicked(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxmls/leaderBoard.fxml"));
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.setTitle("Leader Board");
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML

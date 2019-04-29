@@ -1,15 +1,7 @@
 package controllers;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import Objects.Challenge;
 import Objects.ClientSocket;
-import Objects.LocalDataHandler;
+import Objects.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -25,6 +17,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.swing.*;
+import java.io.*;
+import java.net.Socket;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class CreateChallengeController {
 
@@ -63,11 +61,6 @@ public class CreateChallengeController {
 
     @FXML
     void browseButtonClicked(ActionEvent event) {
-        /*JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Choose 4 photos");
-        chooser.setFileFilter(new FileNameExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
-        files = Arrays.asList(chooser.getSelectedFiles());
-        viewFilesNames(files);*/
         while (files.size() != 4) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Choose 4 photos");
@@ -90,7 +83,7 @@ public class CreateChallengeController {
 
     @FXML
     void closeClicked(ActionEvent event) {
-
+        System.exit(0);
     }
 
     @FXML
@@ -99,8 +92,13 @@ public class CreateChallengeController {
     }
 
     @FXML
-    void leaderBoardClicked(ActionEvent event) {
-
+    void leaderBoardClicked(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxmls/leaderBoard.fxml"));
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.setTitle("Leader Board");
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
@@ -116,19 +114,29 @@ public class CreateChallengeController {
 
     @FXML
     void submitButtonClicked(ActionEvent event) throws IOException {
+        ClientSocket.createNewConnection();
         if (relatedWord.getText().length() == 0) {
             JOptionPane.showMessageDialog(null, "please insert a related word");
         } else if (time.getText().length() == 0) {
             JOptionPane.showMessageDialog(null, "please insert a time");
         } else {
-            Challenge challenge = new Challenge(time.getText(), relatedWord.getText(), files,LocalDataHandler.getSignedInUser());
+            //Challenge challenge = new Challenge(time.getText(), relatedWord.getText(), files,Utils.getSignedInUser());
             //TODO sendToServer(); send the 4 photos,relatedWord and time to the server and the server will manually create a challenge with the received data..
-
-            LocalDataHandler.addChallenge(challenge);// adds the challenge to the list of LocalDataHandler.challenges locally in the client's device
+            try {
+                Socket socket = ClientSocket.getInstance();
+                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+                dos.writeUTF("createChallenge");
+                dos.writeUTF(relatedWord.getText());
+                dos.writeUTF(time.getText());
+                dos.writeUTF(Utils.getSignedInUser());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //Utils.addChallenge(challenge);// adds the challenge to the list of Utils.challenges locally in the client's device
             //serialization should be replaced here...
-           /* OutputStream outputStream = new FileOutputStream("LocalDataHandler.challenges.txt");
+           /* OutputStream outputStream = new FileOutputStream("Utils.challenges.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(LocalDataHandler.getChallenges());*/
+            objectOutputStream.writeObject(Utils.getChallenges());*/
             uploadFilesToServer();
             JOptionPane.showMessageDialog(null, " Challenge submitted successfully\nPress back or create new Challenge");
             relatedWord.clear();
@@ -141,7 +149,6 @@ public class CreateChallengeController {
 
     @FXML
     void initialize() {
-        ClientSocket.createNewConnection();
         assert relatedWord != null : "fx:id=\"relatedWord\" was not injected: check your FXML file 'uploadPhotos.fxml'.";
         assert filesList != null : "fx:id=\"filesList\" was not injected: check your FXML file 'uploadPhotos.fxml'.";
 
@@ -158,6 +165,7 @@ public class CreateChallengeController {
     }
 
     private void uploadFilesToServer() {
+        ClientSocket.createNewConnection();
         try {
             Socket socket = ClientSocket.getInstance();
             BufferedOutputStream bos = new BufferedOutputStream(socket.getOutputStream());

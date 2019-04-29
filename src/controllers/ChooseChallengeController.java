@@ -1,14 +1,8 @@
 package controllers;
 
-import java.io.*;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import Objects.Challenge;
 import Objects.ClientSocket;
-import Objects.LocalDataHandler;
+import Objects.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -21,6 +15,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
 public class ChooseChallengeController {
 
     @FXML
@@ -32,11 +35,10 @@ public class ChooseChallengeController {
     @FXML
     private ListView<String> challengesList;
 
-    List<Challenge> challenges;
+    private List<Challenge> challenges;
 
     @FXML
     void aboutClicked(ActionEvent event) {
-
     }
 
     @FXML
@@ -55,7 +57,7 @@ public class ChooseChallengeController {
 
     @FXML
     void closeClicked(ActionEvent event) {
-
+        System.exit(0);
     }
 
     @FXML
@@ -64,8 +66,13 @@ public class ChooseChallengeController {
     }
 
     @FXML
-    void leaderBoardClicked(ActionEvent event) {
-
+    void leaderBoardClicked(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxmls/leaderBoard.fxml"));
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.setTitle("Leader Board");
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
@@ -99,10 +106,11 @@ public class ChooseChallengeController {
         ClientSocket.createNewConnection();
         assert challengesList != null : "fx:id=\"challengesList\" was not injected: check your FXML file 'createChallenge.fxml'.";
         List<String> challengesDesc = new ArrayList<>();
-        challenges = LocalDataHandler.getChallenges();
+        challenges = loadChallenges();
+        Utils.setChallenges(challenges);
         for ( int i = 0; i < challenges.size(); i++ ) {
             challengesDesc.add("Challenge #" + i + " \t\t\t "
-                    + challenges.get(i).getTime() + " Minutes"+"\t\t"+challenges.get(i).getCreator());
+                    + challenges.get(i).getTime() + " Minutes" + "\t\t" + challenges.get(i).getCreator());
         }
         if (challenges.size() > 0) {
             ObservableList<String> observableList = FXCollections.observableArrayList(challengesDesc);
@@ -111,4 +119,18 @@ public class ChooseChallengeController {
         }
     }
 
+    private List<Challenge> loadChallenges() {
+        List<Challenge> challenges = null;
+        try {
+            Socket socket = ClientSocket.getInstance();
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            dos.writeUTF("getChallenges");
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            challenges = (List<Challenge>) ois.readObject();
+            Utils.setChallenges(challenges);
+        } catch (Exception e) {
+        }
+        return challenges;
+    }
 }
+

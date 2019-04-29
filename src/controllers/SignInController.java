@@ -1,12 +1,7 @@
 package controllers;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import Objects.ClientSocket;
-import Objects.LocalDataHandler;
+import Objects.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +13,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import javax.swing.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class SignInController {
 
@@ -47,7 +48,7 @@ public class SignInController {
 
     @FXML
     void closeClicked(ActionEvent event) {
-
+        System.exit(0);
     }
 
     @FXML
@@ -55,7 +56,7 @@ public class SignInController {
         Parent loader;
         if (checkCardinality()) {
             loader = FXMLLoader.load(getClass().getResource("/fxmls/homePage.fxml"));
-            LocalDataHandler.setSignedInUser(userNameField.getText());
+            Utils.setSignedInUser(userNameField.getText());
         } else {
             JOptionPane.showMessageDialog(null, "User name or Password is wrong\nPlease try again");
             loader = FXMLLoader.load(getClass().getResource("/fxmls/signIn.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
@@ -86,7 +87,7 @@ public class SignInController {
 
     private boolean checkCardinality() {
         String response = "false";
-       /*try {
+        try {
             Socket socket = ClientSocket.getInstance();
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
             DataInputStream dis = new DataInputStream(socket.getInputStream());
@@ -96,7 +97,7 @@ public class SignInController {
             response = dis.readUTF();
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
-        return !response.equals("true");
+        }
+        return response.equals("true");
     }
 }

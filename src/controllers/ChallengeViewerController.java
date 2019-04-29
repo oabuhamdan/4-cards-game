@@ -1,17 +1,8 @@
 package controllers;
 
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.Socket;
-import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import Objects.Challenge;
 import Objects.ClientSocket;
-import Objects.LocalDataHandler;
-import javafx.embed.swing.SwingFXUtils;
+import Objects.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,8 +15,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.io.*;
+import java.net.Socket;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class ChallengeViewerController {
 
@@ -80,7 +75,7 @@ public class ChallengeViewerController {
 
     @FXML
     void closeClicked(ActionEvent event) {
-
+        System.exit(0);
     }
 
     @FXML
@@ -89,8 +84,13 @@ public class ChallengeViewerController {
     }
 
     @FXML
-    void leaderBoardClicked(ActionEvent event) {
-
+    void leaderBoardClicked(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxmls/leaderBoard.fxml"));
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.setTitle("LeaderBoard");
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
@@ -120,7 +120,7 @@ public class ChallengeViewerController {
             Socket socket = ClientSocket.getInstance();
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
             dos.writeUTF("addScoreToUser");
-            dos.writeUTF(LocalDataHandler.getSignedInUser());
+            dos.writeUTF(Utils.getSignedInUser());
             dos.writeInt(score);
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,7 +160,7 @@ public class ChallengeViewerController {
 
     void setSelectedChallenge(int selectedChallenge) throws IOException {
         getImagesFolder(selectedChallenge);
-        challenge = LocalDataHandler.getChallenges().get(selectedChallenge);
+        challenge = Utils.getChallenges().get(selectedChallenge);
         challenge.setFolderIndex(selectedChallenge);
         Image[] images = new Image[4];
         List<File> imagesFile = challenge.getImages();
