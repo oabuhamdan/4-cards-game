@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainServer {
-    static final int PORT = 8000;
+    static final int PORT = 8888;
     static List<Challenge> challenges;
     static List<User> users;
 

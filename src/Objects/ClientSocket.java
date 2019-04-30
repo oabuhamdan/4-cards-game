@@ -15,7 +15,7 @@ public class ClientSocket {
 
     public static void createNewConnection() {
         try {
-            socket = new Socket("127.0.0.1", 8000);
+            socket = new Socket("127.0.0.1", 8888);
         } catch (Exception e) {
             e.printStackTrace();
         }

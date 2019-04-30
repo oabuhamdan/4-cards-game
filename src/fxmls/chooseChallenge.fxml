@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="324.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChooseChallengeController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="324.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChooseChallengeController">
    <children>
       <MenuBar layoutX="-6.0" prefHeight="29.0" prefWidth="192.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -35,7 +35,7 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
-      <Label layoutX="24.0" layoutY="43.0" prefHeight="37.0" prefWidth="205.0" text="Choose a challenge">
+      <Label layoutX="24.0" layoutY="43.0" prefHeight="37.0" prefWidth="291.0" text="Choose a challenge">
          <font>
             <Font name="Cortoba" size="21.0" />
          </font>
