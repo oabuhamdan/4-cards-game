@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 
 public class ChatRoomController {
 
+    private boolean flag = false;
 
     @FXML
     private ResourceBundle resources;
@@ -41,17 +42,34 @@ public class ChatRoomController {
         try {
             Socket socket = new Socket("127.0.0.1", 8001);
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            dos.writeUTF("sendMessage");
             dos.writeUTF(Utils.getSignedInUser() + " : " + message.getText());
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            List<String> messages = (List<String>) ois.readObject();
-            if (messages.size() > 0) {
-                ObservableList<String> observableList = FXCollections.observableArrayList(messages);
-                FilteredList<String> filteredList = new FilteredList<>(observableList, s -> true);
-                messagesList.setItems(filteredList);
-            }
             message.clear();
+            if (!flag) {
+                new Thread(this::getMessagesFromServer).start();
+                flag = true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void getMessagesFromServer() {
+        while (true) {
+            try {
+                Socket socket = new Socket("127.0.0.1", 8001);
+                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+                dos.writeUTF("getMessages");
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                List<String> messages = (List<String>) ois.readObject();
+                if (messages.size() > 0) {
+                    ObservableList<String> observableList = FXCollections.observableArrayList(messages);
+                    FilteredList<String> filteredList = new FilteredList<>(observableList, s -> true);
+                    messagesList.setItems(filteredList);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

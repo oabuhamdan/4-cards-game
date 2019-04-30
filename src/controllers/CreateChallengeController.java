@@ -126,8 +126,6 @@ public class CreateChallengeController {
         } else if (time.getText().length() == 0) {
             JOptionPane.showMessageDialog(null, "please insert a time");
         } else {
-            //Challenge challenge = new Challenge(time.getText(), relatedWord.getText(), files,Utils.getSignedInUser());
-            //TODO sendToServer(); send the 4 photos,relatedWord and time to the server and the server will manually create a challenge with the received data..
             try {
                 Socket socket = ClientSocket.getInstance();
                 DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
