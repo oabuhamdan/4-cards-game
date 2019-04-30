@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -51,8 +52,13 @@ public class ChooseChallengeController {
     }
 
     @FXML
-    void chatRoomClicked(ActionEvent event) {
-
+    void chatRoomClicked(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxmls/chatRoom.fxml"));
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.setTitle("Chat Room");
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
@@ -93,12 +99,13 @@ public class ChooseChallengeController {
 
     @FXML
     void signOutClicked(ActionEvent event) throws IOException {
-        ClientSocket.terminateConnection();
-        Parent loader = FXMLLoader.load(getClass().getResource("/fxmls/startPage.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
+        /*Parent loader = FXMLLoader.load(getClass().getResource("/fxmls/startPage.fxml"));//Creates a Parent called loader and assign it as ScReen2.FXML
         Scene scene = new Scene(loader); //This creates a new scene called scene and assigns it as the Sample.FXML document which was named "loader"
         Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); //this accesses the window.
         app_stage.setScene(scene); //This sets the scene as scene
-        app_stage.show(); // this shows the scene
+        app_stage.show(); // this shows the scene*/
+        JOptionPane.showMessageDialog(null, "You are signed out");
+        ClientSocket.terminateConnection();
     }
 
     @FXML
